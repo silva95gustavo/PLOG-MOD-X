@@ -1,3 +1,5 @@
+/* Print */
+
 print_board([H | T]) :-
         print_dashed_line(H), nl,
         print_board_content([H | T]).
