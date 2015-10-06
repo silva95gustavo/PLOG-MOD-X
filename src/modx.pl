@@ -70,3 +70,5 @@ print_cell(Base, Piece, 2) :-
 print_cell(Base, Piece, 3) :-
         Piece > -1,
         print_cell(Base, Piece, 1).
+
+/* Test code: print_board([[[-1, -1], [0, -1]], [[-1, 0], [0, 0]]]). */
