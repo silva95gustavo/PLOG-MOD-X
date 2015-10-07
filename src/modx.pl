@@ -21,7 +21,7 @@ print_board_line_aux([[B, P] | T], Line) :-
         print_board_line_aux(T, Line).
 print_board_line_aux([], _).
 
-print_piece(H, H).
+print_piece(H, H).      /*      isto é necessário?      */
 
 print_dashed_line([_ | T]) :-
         write('--------'),
@@ -30,17 +30,16 @@ print_dashed_line([]) :- write('-').
 
 piece_to_ascii(-1, ' ').
 piece_to_ascii(0, 'X').
-piece_to_ascii(1, 'M').
-piece_to_ascii(2, 'O').
-piece_to_ascii(3, '^').
-piece_to_ascii(4, ';').
+piece_to_ascii(1, 'R').
+piece_to_ascii(2, 'B').
+piece_to_ascii(3, 'Y').
+piece_to_ascii(4, 'G').
 
 base_to_ascii(-1, ' ').
-base_to_ascii(0, '=').
-base_to_ascii(1, 'm').
-base_to_ascii(2, '+').
-base_to_ascii(3, '~').
-base_to_ascii(4, ':').
+base_to_ascii(1, 'r').
+base_to_ascii(2, 'b').
+base_to_ascii(3, 'y').
+base_to_ascii(4, 'g').
 
 print_cell(Base, -1, _) :-
         base_to_ascii(Base, B),
@@ -71,4 +70,5 @@ print_cell(Base, Piece, 3) :-
         Piece > -1,
         print_cell(Base, Piece, 1).
 
-/* Test code: print_board([[[-1, -1], [0, -1]], [[-1, 0], [0, 0]]]). */
+/* Test code by calling test(x) - x can be any atom or variable*/
+test(_) :- print_board([[[-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1]], [[-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1]], [[-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1]], [[-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1]], [[-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1]], [[-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1]], [[-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1]], [[-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1]]]).
