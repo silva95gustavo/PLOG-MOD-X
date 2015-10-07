@@ -1,3 +1,29 @@
+/* Constants */
+
+board_size(8).
+num_xpieces(14).
+num_markers(18).
+
+/* Main */
+
+create_board(Board) :-
+        board_size(Size),
+        create_board(Size, Board).
+create_board(Size, Board) :- create_board(Size, Size, Board).               
+create_board(Width, Height, Board) :-
+        Height > 0,
+        H1 is Height - 1,
+        create_board_line(Width, L1),
+        create_board(Width, H1, B1),
+        append([L1], B1, Board).
+create_board(_, 0, []).
+create_board_line(Width, Line) :-
+        Width > 0,
+        W1 is Width - 1,
+        create_board_line(W1, L1),
+        append([[-1, -1]], L1, Line).
+create_board_line(0, []).
+        
 /* Visualization */
 
 print_board([H | T]) :-
@@ -21,54 +47,56 @@ print_board_line_aux([[B, P] | T], Line) :-
         print_board_line_aux(T, Line).
 print_board_line_aux([], _).
 
-print_piece(H, H).      /*      isto é necessário?      */
+print_Xpiece(H, H).      /*      isto é necessário?      */
 
 print_dashed_line([_ | T]) :-
         write('--------'),
         print_dashed_line(T).
 print_dashed_line([]) :- write('-').
 
-piece_to_ascii(-1, ' ').
-piece_to_ascii(0, 'X').
-piece_to_ascii(1, 'R').
-piece_to_ascii(2, 'B').
-piece_to_ascii(3, 'Y').
-piece_to_ascii(4, 'G').
+xpiece_to_ascii(-1, ' ').
+xpiece_to_ascii(0, 'X').
+xpiece_to_ascii(1, 'R').
+xpiece_to_ascii(2, 'B').
+xpiece_to_ascii(3, 'Y').
+xpiece_to_ascii(4, 'G').
 
-base_to_ascii(-1, ' ').
-base_to_ascii(1, 'r').
-base_to_ascii(2, 'b').
-base_to_ascii(3, 'y').
-base_to_ascii(4, 'g').
+marker_to_ascii(-1, ' ').
+marker_to_ascii(1, 'r').
+marker_to_ascii(2, 'b').
+marker_to_ascii(3, 'y').
+marker_to_ascii(4, 'g').
 
-print_cell(Base, -1, _) :-
-        base_to_ascii(Base, B),
-        print(B),
-        print(B),
-        print(B),
-        print(B),
-        print(B).
-print_cell(Base, Piece, 1) :-
-        Piece > -1,
-        piece_to_ascii(Piece, P),
-        base_to_ascii(Base, B),
-        print(P),
-        print(B),
-        print(B),
-        print(B),
-        print(P).
-print_cell(Base, Piece, 2) :-
-        Piece > -1,
-        piece_to_ascii(Piece, P),
-        base_to_ascii(Base, B),
-        print(B),
-        print(B),
-        print(P),
-        print(B),
-        print(B).
-print_cell(Base, Piece, 3) :-
-        Piece > -1,
-        print_cell(Base, Piece, 1).
+print_cell(Marker, -1, _) :-
+        marker_to_ascii(Marker, M),
+        print(M),
+        print(M),
+        print(M),
+        print(M),
+        print(M).
+print_cell(Marker, Xpiece, 1) :-
+        Xpiece > -1,
+        xpiece_to_ascii(Xpiece, X),
+        marker_to_ascii(Marker, M),
+        print(X),
+        print(M),
+        print(M),
+        print(M),
+        print(X).
+print_cell(Marker, Xpiece, 2) :-
+        Xpiece > -1,
+        xpiece_to_ascii(Xpiece, X),
+        marker_to_ascii(Marker, M),
+        print(M),
+        print(M),
+        print(X),
+        print(M),
+        print(M).
+print_cell(Marker, Xpiece, 3) :-
+        Xpiece > -1,
+        print_cell(Marker, Xpiece, 1).
 
 /* Test code by calling test(x) - x can be any atom or variable*/
-test(_) :- print_board([[[-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1]], [[-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1]], [[-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1]], [[-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1]], [[-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1]], [[-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1]], [[-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1]], [[-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1]]]).
+test(_) :-
+        create_board(B),
+        print_board(B).
