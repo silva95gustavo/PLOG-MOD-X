@@ -1,3 +1,8 @@
+/* Modules*/
+
+:- use_module(library(random)).
+
+
 /* Constants */
 
 board_size(8).
