@@ -13,7 +13,6 @@ num_markers(18).
 % Game
 
 game_board(Game, Board) :- nth0(0, Game, Board).
-
 game_player(Game, Player) :- nth0(1, Game, Player).
 
 % Board
@@ -21,6 +20,8 @@ game_player(Game, Player) :- nth0(1, Game, Player).
 board_xy(Board, [X, Y], Cell) :-
         nth0(Y, Board, Line),
         nth0(X, Line, Cell).
+
+num_jokers_to_place(Board, N). % TODO
 
 create_board(Board) :-
         board_size(Size),
