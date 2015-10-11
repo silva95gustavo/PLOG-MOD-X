@@ -1,6 +1,7 @@
 /* Modules*/
 
 :- use_module(library(random)).
+:- use_module(library(lists)).
 
 
 /* Constants */
@@ -9,7 +10,17 @@ board_size(8).
 num_xpieces(14).
 num_markers(18).
 
-/* Main */
+% Game
+
+game_board(Game, Board) :- nth0(0, Game, Board).
+
+game_player(Game, Player) :- nth0(1, Game, Player).
+
+% Board
+
+board_xy(Board, [X, Y], Cell) :-
+        nth0(Y, Board, Line),
+        nth0(X, Line, Cell).
 
 create_board(Board) :-
         board_size(Size),
@@ -26,10 +37,28 @@ create_board_line(Width, Line) :-
         Width > 0,
         W1 is Width - 1,
         create_board_line(W1, L1),
-        append([[-1, -1]], L1, Line).
+        append([[[], -1]], L1, Line).
 create_board_line(0, []).
+
+% Cell
+
+cell_spieces([Ss, _], Ss).
+cell_xpiece([_, X], X).
+cell_top_spiece(Cell, S) :- 
+        cell_spieces(Cell, []),
+        S = -1.
+cell_top_spiece(Cell, S) :-
+        cell_spieces(Cell, [S | _]).
         
-/* Visualization */
+        
+% Plays
+
+place_xpiece(Game, [X, Y], New_game). % TODO!!! deve também apagar os jokers a ser movidos
+
+place_joker(Game, [X, Y], New_game). % TODO!!!
+
+        
+% Visualization
 
 print_board([H | T]) :-
         print_dashed_line(H), nl,
@@ -45,8 +74,10 @@ print_board_row([H | T]) :-
         write('|'), print_board_line_aux([H | T], 1), nl,
         write('|'), print_board_line_aux([H | T], 2), nl,
         write('|'), print_board_line_aux([H | T], 3).
-print_board_line_aux([[B, P] | T], Line) :-
+print_board_line_aux([Cell | T], Line) :-
         write(' '),
+        cell_top_spiece(Cell, B),
+        cell_xpiece(Cell, P),
         print_cell(B, P, Line),
         write(' |'),
         print_board_line_aux(T, Line).
@@ -95,19 +126,19 @@ print_cell(Marker, Xpiece, 3) :-
         Xpiece > -1,
         print_cell(Marker, Xpiece, 1).
 
-/* Test code by calling test(x) - x can be any atom or variable*/
+% Test code by calling test(x) - x can be any atom or variable
 test(_) :-
         create_board(B),
         print_board(B).
 
 test_displ(_) :-
-        print_board([[[-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, 0], [-1, -1], [-1, -1], [-1, -1]],
-                     [[-1, -1], [1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1]],
-                     [[-1, -1], [-1, -1], [1, -1], [-1, -1], [-1, 0], [-1, -1], [-1, 0], [-1, -1]],
-                     [[-1, -1], [-1, -1], [-1, -1], [1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1]],
-                     [[-1, -1], [-1, -1], [-1, -1], [-1, -1], [1, -1], [2, -1], [-1, -1], [2, -1]],
-                     [[-1, -1], [-1, -1], [2, -1], [2, -1], [2, -1], [2, -1], [2, -1], [-1, -1]],
-                     [[-1, 2], [-1, 0], [-1, 1], [-1, 1], [-1, 0], [2, 1], [-1, 1], [2, -1]],
-                     [[-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, -1], [-1, 1], [-1, -1]]]).
+        print_board([[[[], -1], [[], -1],       [[], -1],       [[], -1],       [[], 0],        [[], -1],       [[], -1],       [[], -1]],
+                     [[[], -1], [[], -1],       [[], -1],       [[], -1],       [[], -1],       [[], -1],       [[], -1],       [[], -1]],
+                     [[[], -1], [[], -1],       [[], -1],       [[], -1],       [[], 0],        [[], -1],       [[], 0],        [[], -1]],
+                     [[[], -1], [[], -1],       [[], -1],       [[1], -1],      [[], -1],       [[], -1],       [[], -1],       [[], -1]],
+                     [[[], -1], [[], -1],       [[], -1],       [[], -1],       [[1], -1],      [[2], -1],      [[], -1],       [[2], -1]],
+                     [[[], -1], [[], -1],       [[2], -1],      [[2], -1],      [[2], -1],      [[2], -1],      [[2], -1],      [[], -1]],
+                     [[[], 2],  [[], 0],        [[], 1],        [[], 1],        [[], 0],        [[2], 1],       [[], 1],        [[2], -1]],
+                     [[[], -1], [[], -1],       [[], -1],       [[], -1],       [[], -1],       [[], -1],       [[], 1],        [[], -1]]]).
 
 
