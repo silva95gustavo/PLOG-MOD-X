@@ -1,10 +1,10 @@
-/* Modules*/
+% Modules
 
 :- use_module(library(random)).
 :- use_module(library(lists)).
 
 
-/* Constants */
+% Constants
 
 board_size(8).
 num_xpieces(14).
@@ -55,8 +55,6 @@ cell_top_spiece(Cell, S) :-
 % Plays
 
 place_xpiece(Game, [X, Y], New_game). % TODO!!! deve também apagar os jokers a ser movidos
-
-place_joker(Game, [X, Y], New_game). % TODO!!!
 
         
 % Visualization
