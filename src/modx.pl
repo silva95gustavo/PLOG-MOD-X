@@ -4,22 +4,12 @@
 :- use_module(library(lists)).
 
 
-% Utils
-
-count_occurrences(X, [], 0).
-count_occurrences(X, [X | T], N) :-
-        N1 is N - 1,
-        count_occurrences(X, T, N1).
-count_occurrences(X, [H | T], N) :-
-        X \= H,
-        count_occurrences(X, T, N).
-
-
 % Constants
 
 board_size(8).
 num_xpieces(14).
 num_markers(18).
+num_jokers(5).
 
 % Game
 
@@ -32,7 +22,10 @@ board_xy(Board, [X, Y], Cell) :-
         nth0(Y, Board, Line),
         nth0(X, Line, Cell).
 
-num_jokers_to_place(Board, N). % TODO
+num_jokers_to_place(Board, N) :-
+        num_jokers(J),
+        count_xpieces(0, Board, N1),
+        N is J - N1.
 
 create_board(Board) :-
         board_size(Size),
@@ -63,6 +56,23 @@ cell_top_spiece(Cell, S) :-
         cell_spieces(Cell, [S | _]).
         
         
+% Main
+
+count_xpieces_line(_, [], 0).
+count_xpieces_line(Xpiece, [Cell | T], N) :-
+        cell_xpiece(Cell, Xpiece),
+        count_xpieces_line(Xpiece, T, N1),
+        N is N1 + 1.
+count_xpieces_line(Xpiece, [Cell | T], N) :-
+        cell_xpiece(Cell, X2),
+        Xpiece \= X2,
+        count_xpieces_line(Xpiece, T, N).
+count_xpieces(_, [], 0).
+count_xpieces(Xpiece, [Line | T], N) :-
+        count_xpieces_line(Xpiece, Line, N1),
+        count_xpieces(Xpiece, T, N2),
+        N is N1 + N2.
+
 % Plays
 
 place_xpiece(Game, [X, Y], New_game). % TODO!!! deve também apagar os jokers a ser movidos
