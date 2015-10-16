@@ -27,26 +27,25 @@ game_player(Game, Player) :- nth0(1, Game, Player).
 check_patterns(Game, New_scores) :-
         check_patterns_aux(Game, [0, 0], [], New_scores).
 check_patterns_aux(Game, [X, Y], Scores, Scores) :-
-        Y1 is Y + 1,
         game_board(Game, Board),
-        \+ board_xy(Board, [X, Y1], _).
+        \+ board_xy(Board, [X, Y], _).
 check_patterns_aux(Game, [X, Y], Scores, New_scores) :-
+        game_board(Game, Board),
+        board_xy(Board, [X, Y], _),
         check_patterns_aux_aux(Game, [X, Y], Scores, New_scores1),
         Y1 is Y + 1,
-        game_board(Game, Board),
-        board_xy(Board, [X, Y1], _),
         check_patterns_aux(Game, [X, Y1], New_scores1, New_scores).
 check_patterns_aux_aux(Game, [X, Y], Scores, Scores) :-
-        X1 is X + 1,
         game_board(Game, Board),
-        \+ board_xy(Board, [X1, Y], _).
+        \+ board_xy(Board, [X, Y], _).
 check_patterns_aux_aux(Game, [X, Y], Scores, New_scores) :-
+        game_board(Game, Board),
+        board_xy(Board, [X, Y], _),
         check_pattern_x(Game, [X, Y], Scores, S1),
         check_pattern_plus(Game, [X, Y], S1, S2),
+        check_pattern_5inarow(Game, [X, Y], S2, S3),
         X1 is X + 1,
-        game_board(Game, Board),
-        board_xy(Board, [X1, Y], _),
-        check_patterns_aux_aux(Game, [X1, Y], S2, New_scores).
+        check_patterns_aux_aux(Game, [X1, Y], S3, New_scores).
 
 check_pattern_x(Game, [X, Y], Scores, New_scores) :-
         Xm1 is X - 1,
@@ -61,6 +60,48 @@ check_pattern_plus(Game, [X, Y], Scores, New_scores) :-
         Ym1 is Y - 1,
         Yp1 is Y + 1,
         check_pattern(Game, [[Xm1, Y], [Xp1, Y], [X, Y], [X, Ym1], [X, Yp1]], Scores, New_scores).
+
+check_pattern_5inarow(Game, [X, Y], Scores, New_scores) :-
+        check_pattern_5inarow_hor(Game, [X, Y], Scores, S1),
+        check_pattern_5inarow_vert(Game, [X, Y], S1, S2),
+        check_pattern_5inarow_diag1(Game, [X, Y], S2, S3),
+        check_pattern_5inarow_diag2(Game, [X, Y], S3, New_scores).
+
+check_pattern_5inarow_hor(Game, [X, Y], Scores, New_scores) :-
+        Xm1 is X - 1,
+        Xm2 is X - 2,
+        Xp1 is X + 1,
+        Xp2 is X + 2,
+        check_pattern(Game, [[Xm2, Y], [Xm1, Y], [X, Y], [Xp1, Y], [Xp2, Y]], Scores, New_scores).
+
+check_pattern_5inarow_vert(Game, [X, Y], Scores, New_scores) :-
+        Ym1 is Y - 1,
+        Ym2 is Y - 2,
+        Yp1 is Y + 1,
+        Yp2 is Y + 2,
+        check_pattern(Game, [[X, Ym2], [X, Ym1], [X, Y], [X, Yp1], [X, Yp2]], Scores, New_scores).
+
+check_pattern_5inarow_diag1(Game, [X, Y], Scores, New_scores) :-
+        Xm1 is X - 1,
+        Xm2 is X - 2,
+        Xp1 is X + 1,
+        Xp2 is X + 2,
+        Ym1 is Y - 1,
+        Ym2 is Y - 2,
+        Yp1 is Y + 1,
+        Yp2 is Y + 2,
+        check_pattern(Game, [[Xm2, Ym2], [Xm1, Ym1], [X, Y], [Xp1, Yp1], [Xp2, Yp2]], Scores, New_scores).
+
+check_pattern_5inarow_diag2(Game, [X, Y], Scores, New_scores) :-
+        Xm1 is X - 1,
+        Xm2 is X - 2,
+        Xp1 is X + 1,
+        Xp2 is X + 2,
+        Ym1 is Y - 1,
+        Ym2 is Y - 2,
+        Yp1 is Y + 1,
+        Yp2 is Y + 2,
+        check_pattern(Game, [[Xp2, Ym2], [Xp1, Ym1], [X, Y], [Xm1, Yp1], [Xm2, Yp2]], Scores, New_scores).
 
 check_pattern(Game, Coords_list, Scores, New_scores) :-
         check_pattern_aux(Game, Coords_list),
@@ -238,10 +279,8 @@ test_displ(_) :-
                      [[[], 2],  [[], 0],        [[], 1],        [[], 1],        [[], 0],        [[2], 1],       [[], 1],        [[2], -1]],
                      [[[], -1], [[], -1],       [[], -1],       [[], -1],       [[], -1],       [[], -1],       [[], 1],        [[], -1]]]).
 
-test_board([[[[], 0], [[], -1], [[], 0]],
-         [[[], 0], [[], 0], [[], 0]],
-         [[[], 0], [[], 0], [[], 0]]]).
-
-test_check(New_scores) :-
-        test_board(Board),
-        check_patterns([Board, 1], New_scores).
+test_board([[[[], 0], [[], -1], [[], -1], [[], 0], [[], 0]],
+         [[[], 0], [[], -1], [[], -1], [[], 0], [[], 0]],
+         [[[], 0], [[], -1], [[], -1], [[], 0], [[], 0]],
+         [[[], 0], [[], -1], [[], -1], [[], 0], [[], 0]],
+         [[[], 0], [[], -1], [[], -1], [[], 0], [[], 0]]]).
