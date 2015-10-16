@@ -11,10 +11,55 @@ num_xpieces(14).
 num_markers(18).
 num_jokers(5).
 
+
+% Utils
+
+member_list_chk([], _).
+member_list_chk([H | T], List2) :-
+        memberchk(H, List2),
+        member_list_chk(T, List2).
+
 % Game
 
 game_board(Game, Board) :- nth0(0, Game, Board).
 game_player(Game, Player) :- nth0(1, Game, Player).
+
+check_patterns(Game, C2) :-
+        check_pattern_x(Game, [1, 1], [], C1),
+        check_pattern_plus(Game, [1, 1], C1, C2).
+
+check_pattern_x(Game, [X, Y], Scores, New_scores) :-
+        Xm1 is X - 1,
+        Xp1 is X + 1,
+        Ym1 is Y - 1,
+        Yp1 is Y + 1,
+        check_pattern(Game, [[Xm1, Ym1], [Xp1, Ym1], [X, Y], [Xm1, Yp1], [Xp1, Yp1]], Scores, New_scores).
+
+check_pattern_plus(Game, [X, Y], Scores, New_scores) :-
+        Xm1 is X - 1,
+        Xp1 is X + 1,
+        Ym1 is Y - 1,
+        Yp1 is Y + 1,
+        check_pattern(Game, [[Xm1, Y], [Xp1, Y], [X, Y], [X, Ym1], [X, Yp1]], Scores, New_scores).
+
+check_pattern(Game, Coords_list, Scores, New_scores) :-
+        check_pattern_aux(Game, Coords_list),
+        \+ member_list_chk(Coords_list, Scores),
+        append(Scores, Coords_list, New_scores1),
+        remove_dups(New_scores1, New_scores).
+
+check_pattern_aux(_, []).
+check_pattern_aux(Game, [[X, Y] | T]) :-
+        game_board(Game, Board),
+        board_xy(Board, [X, Y], Cell),
+        check_pattern_valid_cell(Game, Cell),
+        check_pattern_aux(Game, T).
+
+check_pattern_valid_cell(Game, Cell) :-
+        game_player(Game, Player),
+        cell_xpiece(Cell, Player).
+check_pattern_valid_cell(_, Cell) :-
+        cell_xpiece(Cell, 0). % Joker
 
 % Board
 
@@ -171,4 +216,10 @@ test_displ(_) :-
                      [[[], 2],  [[], 0],        [[], 1],        [[], 1],        [[], 0],        [[2], 1],       [[], 1],        [[2], -1]],
                      [[[], -1], [[], -1],       [[], -1],       [[], -1],       [[], -1],       [[], -1],       [[], 1],        [[], -1]]]).
 
+test_board([[[[], 0], [[], 0], [[], 0]],
+         [[[], 0], [[], 0], [[], 0]],
+         [[[], 0], [[], 0], [[], 0]]]).
 
+test_check(New_scores) :-
+        test_board(Board),
+        check_patterns([Board, 1], New_scores).
