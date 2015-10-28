@@ -21,6 +21,11 @@ member_list_chk([H | T], List2) :-
 
 % Game
 
+start_game(Game) :-
+        game_board(Game, Board),
+        create_board(Board),
+        game_player(Game, 0).
+
 game_board(Game, Board) :- nth0(0, Game, Board).
 game_player(Game, Player) :- nth0(1, Game, Player).
 
@@ -104,12 +109,11 @@ check_pattern_5inarow_diag2(Game, [X, Y], Scores, New_scores) :-
         check_pattern(Game, [[Xp2, Ym2], [Xp1, Ym1], [X, Y], [Xm1, Yp1], [Xm2, Yp2]], Scores, New_scores).
 
 check_pattern(Game, Coords_list, Scores, New_scores) :-
-        check_pattern_aux(Game, Coords_list),
+        check_pattern_aux(Game, Coords_list), !,
         \+ member_list_chk(Coords_list, Scores),
         append(Scores, Coords_list, New_scores1),
         remove_dups(New_scores1, New_scores).
-check_pattern(Game, Coords_list, Scores, Scores) :-
-        \+ check_pattern_aux(Game, Coords_list).
+check_pattern(_, _, Scores, Scores).
 
 check_pattern_aux(_, []).
 check_pattern_aux(Game, [[X, Y] | T]) :-
@@ -123,6 +127,10 @@ check_pattern_valid_cell(Game, Cell) :-
         cell_xpiece(Cell, Player).
 check_pattern_valid_cell(_, Cell) :-
         cell_xpiece(Cell, 0). % Joker
+
+print_game(Game) :-
+        game_board(Game, Board),
+        print_board(Board).
 
 % Board
 
@@ -181,10 +189,24 @@ count_xpieces(Xpiece, [Line | T], N) :-
         count_xpieces(Xpiece, T, N2),
         N is N1 + N2.
 
+play :-
+        start_game(Game),
+        make_play(Game).
+
+make_play(Game) :-
+        print_game(Game),
+        read_coords([X, Y]).
+        
+read_coords([X, Y]) :-
+        write('X? '),
+        read(X),
+        write('Y? '),
+        read(Y).
+
+
 % Plays
 
 place_xpiece(Game, [X, Y], New_game). % TODO!!! deve também apagar os jokers a ser movidos
-
         
 % Visualization
 
