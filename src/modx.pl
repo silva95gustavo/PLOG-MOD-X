@@ -195,6 +195,11 @@ create_board_line(Width, Line) :-
         append([[[], -1]], L1, Line).
 create_board_line(0, []).
 
+board_set_cell(Board, [X, Y], Cell, New_board) :-
+        nth0(Y, Board, Line),
+        replace(X, Cell, Line, New_line),
+        replace(Y, New_line, Board, New_board).
+
 % Cell
 
 cell_spieces([Ss, _], Ss).
@@ -252,7 +257,7 @@ place_xpiece(Game, Coords, New_game):- % TODO!!! deve também apagar os jokers a 
         cell_spieces(Cell, Spieces),
         cell_spieces(New_cell, Spieces),
         cell_xpiece(New_cell, Player),
-        board_xy(New_board, Coords, New_cell),
+        board_set_cell(Board, Coords, New_cell, New_board),
         game_board(New_game, New_board),
         game_player(New_game, Player).
         
