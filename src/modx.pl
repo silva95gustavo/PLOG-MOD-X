@@ -11,6 +11,29 @@ num_xpieces(14).
 num_markers(18).
 num_jokers(5).
 
+% Menus
+
+show_intro :-
+        nl, nl,
+        write('        |/$$      /$$  /$$$$$$  /$$$$$$$        /$$   /$$        '), nl,
+        write('        | $$$    /$$$ /$$__  $$| $$__  $$      | $$  / $$        '), nl,
+        write('        | $$$$  /$$$$| $$  \\ $$| $$  \\ $$      |  $$/ $$/        '), nl,
+        write('        | $$ $$/$$ $$| $$  | $$| $$  | $$       \\  $$$$/         '), nl,
+        write('        | $$  $$$| $$| $$  | $$| $$  | $$        >$$  $$         '), nl,
+        write('        | $$\\  $ | $$| $$  | $$| $$  | $$       /$$/\\  $$        '), nl,
+        write('        | $$ \\/  | $$|  $$$$$$/| $$$$$$$/      | $$  \\ $$        '), nl,
+        write('        |__/     |__/ \\______/ |_______/       |__/  |__/        '), nl,
+        nl, nl,
+        write('                         Press enter to play                      '), nl,
+        nl,
+        get_char(_),
+        show_main_menu.
+        
+show_main_menu :-
+        write('1. Player vs Bot'), nl,
+        write('2. 2 Players'), nl,
+        write('3. Bot vs Bot'), nl,
+        write('0. Exit'), nl.
 
 % Utils
 
@@ -18,6 +41,17 @@ member_list_chk([], _).
 member_list_chk([H | T], List2) :-
         memberchk(H, List2),
         member_list_chk(T, List2).
+
+replace(N, X, L1, L2) :-
+        length(L3, N),
+        append(L3, [_ | T], L1),
+        append(L3, [X | T], L2).
+
+% CLI
+
+cli_get_char(C) :-
+        get_char(C),
+        get_char(_).
 
 % Game
 
@@ -190,12 +224,15 @@ count_xpieces(Xpiece, [Line | T], N) :-
         N is N1 + N2.
 
 play :-
+        show_main_menu,
         start_game(Game),
         make_play(Game).
 
 make_play(Game) :-
         print_game(Game),
-        read_coords([X, Y]).
+        read_coords(Coords),    
+        place_xpiece(Game, Coords, New_game),
+        make_play(New_game).
         
 read_coords([X, Y]) :-
         write('X? '),
@@ -206,7 +243,19 @@ read_coords([X, Y]) :-
 
 % Plays
 
-place_xpiece(Game, [X, Y], New_game). % TODO!!! deve também apagar os jokers a ser movidos
+place_xpiece(Game, Coords, New_game):- % TODO!!! deve também apagar os jokers a ser movidos
+        game_board(Game, Board),
+        game_player(Game, Player),
+        board_xy(Board, Coords, Cell),
+        cell_xpiece(Cell, Xpiece),
+        Xpiece = -1,
+        cell_spieces(Cell, Spieces),
+        cell_spieces(New_cell, Spieces),
+        cell_xpiece(New_cell, Player),
+        board_xy(New_board, Coords, New_cell),
+        game_board(New_game, New_board),
+        game_player(New_game, Player).
+        
         
 % Visualization
 
