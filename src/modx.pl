@@ -2,6 +2,9 @@
 
 :- use_module(library(random)).
 :- use_module(library(lists)).
+:- use_module(library(system)).
+:- now(Timestamp),
+   setrand(Timestamp).
 
 
 % Constants
@@ -46,6 +49,7 @@ replace(N, X, L1, L2) :-
         length(L3, N),
         append(L3, [_ | T], L1),
         append(L3, [X | T], L2).
+        
 
 % CLI
 
@@ -58,10 +62,13 @@ cli_get_char(C) :-
 start_game(Game) :-
         game_board(Game, Board),
         create_board(Board),
-        game_player(Game, 0).
+        game_player(Game, 1).
 
 game_board(Game, Board) :- nth0(0, Game, Board).
 game_player(Game, Player) :- nth0(1, Game, Player).
+
+next_player(1, 2).
+next_player(2, 1).
 
 check_patterns(Game, New_scores) :-
         check_patterns_aux(Game, [0, 0], [], New_scores).
@@ -179,7 +186,8 @@ num_jokers_to_place(Board, N) :-
 
 create_board(Board) :-
         board_size(Size),
-        create_board(Size, Board).
+        create_board(Size, Board1),
+        create_board_place_jokers(Board1, Board).
 create_board(Size, Board) :- create_board(Size, Size, Board).               
 create_board(Width, Height, Board) :-
         Height > 0,
@@ -195,10 +203,46 @@ create_board_line(Width, Line) :-
         append([[[], -1]], L1, Line).
 create_board_line(0, []).
 
+create_board_place_jokers(Board, New_board) :-
+        num_jokers(N),
+        board_get_size(Board, Width, Height),
+        Total is Width * Height,
+        create_board_place_jokers_aux(Board, New_board, N, Width, Total).
+create_board_place_jokers_aux(Board, Board, 0, _, _) :- !.
+create_board_place_jokers_aux(Board, New_board, N, Width, Total) :-
+        board_random_coords(Board, Coords),
+        board_xy(Board, Coords, Cell),
+        cell_xpiece(Cell, -1),
+        cell_spieces(Cell, Spieces),
+        cell_spieces(New_cell, Spieces),
+        cell_xpiece(New_cell, 0),
+        board_set_cell(Board, Coords, New_cell, Board1),
+        N1 is N - 1,
+        create_board_place_jokers_aux(Board1, New_board, N1, Width, Total).
+
+create_board_place_jokers_aux(Board, New_board, N, Width, Total) :-
+        board_random_coords(Board, Coords),
+        board_xy(Board, Coords, Cell),
+        \+ cell_xpiece(Cell, -1),
+        create_board_place_jokers_aux(Board, New_board, N, Width, Total).
+        
+board_random_coords(Board, [X, Y]) :-
+        board_get_size(Board, Width, Height),
+        Total_size is Width * Height,
+        random(0, Total_size, R),
+        Div is R div Width,
+        Mod is R mod Width,
+        X = Div,
+        Y = Mod.
+        
 board_set_cell(Board, [X, Y], Cell, New_board) :-
         nth0(Y, Board, Line),
         replace(X, Cell, Line, New_line),
         replace(Y, New_line, Board, New_board).
+
+board_get_size([H | T], Width, Height) :-
+        length([H | T], Height),
+        length(H, Width).
 
 % Cell
 
@@ -259,7 +303,8 @@ place_xpiece(Game, Coords, New_game):- % TODO!!! deve também apagar os jokers a 
         cell_xpiece(New_cell, Player),
         board_set_cell(Board, Coords, New_cell, New_board),
         game_board(New_game, New_board),
-        game_player(New_game, Player).
+        next_player(Player, New_player),
+        game_player(New_game, New_player).
         
         
 % Visualization
