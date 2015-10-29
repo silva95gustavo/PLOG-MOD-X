@@ -212,7 +212,7 @@ create_board_place_jokers_aux(Board, Board, 0, _, _) :- !.
 create_board_place_jokers_aux(Board, New_board, N, Width, Total) :-
         board_random_coords(Board, Coords),
         board_xy(Board, Coords, Cell),
-        cell_xpiece(Cell, -1),
+        cell_xpiece(Cell, -1), !,
         cell_spieces(Cell, Spieces),
         cell_spieces(New_cell, Spieces),
         cell_xpiece(New_cell, 0),
@@ -220,11 +220,7 @@ create_board_place_jokers_aux(Board, New_board, N, Width, Total) :-
         N1 is N - 1,
         create_board_place_jokers_aux(Board1, New_board, N1, Width, Total).
 
-create_board_place_jokers_aux(Board, New_board, N, Width, Total) :-
-        board_random_coords(Board, Coords),
-        board_xy(Board, Coords, Cell),
-        \+ cell_xpiece(Cell, -1),
-        create_board_place_jokers_aux(Board, New_board, N, Width, Total).
+create_board_place_jokers_aux(Board, New_board, N, Width, Total) :- create_board_place_jokers_aux(Board, New_board, N, Width, Total).
         
 board_random_coords(Board, [X, Y]) :-
         board_get_size(Board, Width, Height),
