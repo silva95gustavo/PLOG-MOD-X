@@ -49,6 +49,9 @@ replace(N, X, L1, L2) :-
         length(L3, N),
         append(L3, [_ | T], L1),
         append(L3, [X | T], L2).
+
+inc(X, X1) :- X1 is X + 1.
+dec(X, X1) :- X1 is X - 1.
         
 
 % CLI
@@ -62,10 +65,57 @@ cli_get_char(C) :-
 start_game(Game) :-
         game_board(Game, Board),
         create_board(Board),
-        game_player(Game, 1).
+        game_player(Game, 1),
+        player_info_score(Player_info, 0),
+        num_xpieces(N),
+        player_info_num_xpieces(Player_info, N),
+        game_player_info(Game, 0, Player_info),
+        game_player_info(Game, 1, Player_info).
 
 game_board(Game, Board) :- nth0(0, Game, Board).
 game_player(Game, Player) :- nth0(1, Game, Player).
+game_player_info(Game, Player, Player_info) :-
+        nth0(P2, Game, Player_info),
+        Player is P2 - 2.
+
+game_set_board(Game, Board, New_game) :- replace(0, Board, Game, New_game).
+game_next_player(Game, New_game) :-
+        game_player(Game, Player),
+        next_player(Player, New_player),
+        replace(1, New_player, Game, New_game).
+game_inc_player_score(Game, Player, New_game) :-
+        game_player_info(Game, Player, Player_info1),
+        player_info_num_xpieces(Player_info1, Score), write('call 1'),
+        inc(Score, Score1), write('Score1: '), write(Score1),
+        player_info_set_score(Player_info1, Score1, Player_info),
+        P2 is Player + 2,
+        replace(P2, Player_info, Game, New_game).
+game_dec_player_score(Game, Player, New_game) :-
+        game_player_info(Game, Player, Player_info1),
+        player_info_num_xpieces(Player_info1, Score),
+        dec(Score, Score1),
+        player_info_set_score(Player_info1, Score1, Player_info),
+        P2 is Player + 2,
+        replace(P2, Player_info, Game, New_game).
+game_inc_player_num_xpieces(Game, Player, New_game) :-
+        game_player_info(Game, Player, Player_info1),
+        player_info_num_xpieces(Player_info1, Num_xpieces),
+        inc(Num_xpieces, Num_xpieces1),
+        player_info_set_score(Player_info1, Num_xpieces1, Player_info),
+        P2 is Player + 2,
+        replace(P2, Player_info, Game, New_game).
+game_dec_player_num_xpieces(Game, Player, New_game) :-
+        game_player_info(Game, Player, Player_info1),write('Player_info1: '), write(Player_info1),
+        player_info_num_xpieces(Player_info1, Num_xpieces), write('Num_xpieces: '), write(Num_xpieces), write('call 2'),
+        dec(Num_xpieces, Num_xpieces1), write('Num_xpieces1: '), write(Num_xpieces1),
+        player_info_set_score(Player_info1, Num_xpieces1, Player_info),
+        P2 is Player + 2,
+        replace(P2, Player_info, Game, New_game).
+                
+player_info_score([Score, _], Score).
+player_info_num_xpieces([_, Num_xpieces], Num_xpieces).
+player_info_set_score(Player_info, Score, New_player_info) :- replace(0, Score, Player_info, New_player_info).
+player_info_set_num_xpieces(Player_info, Num_xpieces, New_player_info) :- replace(1, Num_xpieces, Player_info, New_player_info).
 
 next_player(1, 2).
 next_player(2, 1).
@@ -169,6 +219,22 @@ check_pattern_valid_cell(Game, Cell) :-
 check_pattern_valid_cell(_, Cell) :-
         cell_xpiece(Cell, 0). % Joker
 
+convert_patterns_to_score(Game, [], Game).
+convert_patterns_to_score(Game, [Coords | T], New_game) :-
+        convert_pattern_to_score(Game, Coords, Game1),
+        convert_patterns_to_score(Game1, T, New_game).
+
+convert_pattern_to_score(Game, [], Game) :- !.
+convert_pattern_to_score(Game, Coords, New_game) :-
+        game_board(Game, Board),
+        game_player(Game, Player),
+        board_xy(Board, Coords, Cell),
+        cell_convert_xpiece_to_spiece(Cell, Cell1),
+        board_set_cell(Board, Coords, Cell1, Board1),
+        game_set_board(Game, Board1, Game1),
+        game_dec_player_num_xpieces(Game1, Player, Game2),
+        game_inc_player_score(Game2, Player, New_game).
+
 print_game(Game) :-
         game_board(Game, Board),
         print_board(Board).
@@ -249,6 +315,7 @@ cell_top_spiece(Cell, S) :-
         S = -1.
 cell_top_spiece(Cell, S) :-
         cell_spieces(Cell, [S | _]).
+cell_convert_xpiece_to_spiece([Ss, X], [[X | Ss], -1]) :- X \= -1.
         
         
 % Main
@@ -269,15 +336,32 @@ count_xpieces(Xpiece, [Line | T], N) :-
         N is N1 + N2.
 
 play :-
-        show_main_menu,
         start_game(Game),
-        make_play(Game).
+        show_main_menu,
+        play(Game).
 
-make_play(Game) :-
+play(Game) :-
         print_game(Game),
-        read_coords(Coords),    
-        place_xpiece(Game, Coords, New_game),
-        make_play(New_game).
+        make_play(Game, Game1),
+        end_play(Game1, New_game),
+        play(New_game).
+
+make_play(Game, New_game) :-
+        game_player(Game, Player),
+        write('Player '), write(Player), write(', please choose a location to place the X.'), nl,
+        read_coords(Coords),
+        place_xpiece(Game, Coords, New_game), !.
+
+make_play(Game, New_game) :-
+        write('Invalid location! Please try again.'), nl,
+        make_play(Game, New_game).
+
+end_play(Game, New_game) :-
+        check_patterns(Game, New_scores),
+        %New_scores = [[0, 0], [1, 1]],
+        convert_patterns_to_score(Game, New_scores, Game1),
+        game_next_player(Game1, New_game).
+        
         
 read_coords([X, Y]) :-
         write('X? '),
@@ -285,29 +369,27 @@ read_coords([X, Y]) :-
         write('Y? '),
         read(Y).
 
-
 % Plays
 
-place_xpiece(Game, Coords, New_game):- % TODO!!! deve também apagar os jokers a ser movidos
+place_xpiece(Game, Coords, New_game):-
         game_board(Game, Board),
+        num_jokers_to_place(Board, 0), !,
         game_player(Game, Player),
         board_xy(Board, Coords, Cell),
-        cell_xpiece(Cell, Xpiece),
-        Xpiece = -1,
+        cell_xpiece(Cell, -1),
         cell_spieces(Cell, Spieces),
         cell_spieces(New_cell, Spieces),
         cell_xpiece(New_cell, Player),
         board_set_cell(Board, Coords, New_cell, New_board),
-        game_board(New_game, New_board),
-        next_player(Player, New_player),
-        game_player(New_game, New_player).
+        game_set_board(Game, New_board, New_game).
         
         
 % Visualization
 
 print_board([H | T]) :-
         print_dashed_line(H), nl,
-        print_board_content([H | T]).
+        print_board_content([H | T]), nl,
+        write([H | T]).
 
 print_board_content([H | T]) :-
         print_board_row(H), nl,
