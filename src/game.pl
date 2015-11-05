@@ -7,14 +7,14 @@ start_game(Game) :-
         player_info_score(Player_info, 0),
         num_xpieces(N),
         player_info_num_xpieces(Player_info, N),
-        game_player_info(Game, 0, Player_info),
-        game_player_info(Game, 1, Player_info).
+        game_player_info(Game, 1, Player_info),
+        game_player_info(Game, 2, Player_info).
 
 game_board(Game, Board) :- nth0(0, Game, Board).
 game_player(Game, Player) :- nth0(1, Game, Player).
 game_player_info(Game, Player, Player_info) :-
-        nth0(P2, Game, Player_info),
-        Player is P2 - 2.
+        P2 is Player + 1,
+        nth0(P2, Game, Player_info).
 
 game_set_board(Game, Board, New_game) :- replace(0, Board, Game, New_game).
 game_next_player(Game, New_game) :-
@@ -170,6 +170,7 @@ convert_pattern_to_score(Game, Coords, New_game) :-
         cell_convert_xpiece_to_spiece(Cell, Cell1),
         board_set_cell(Board, Coords, Cell1, Board1),
         game_set_board(Game, Board1, Game1),
+        write(Game1),
         game_dec_player_num_xpieces(Game1, Player, Game2),
         game_inc_player_score(Game2, Player, New_game).
 
