@@ -11,8 +11,7 @@ marker_to_ascii(2, 'g').
 
 print_board([H | T]) :-
         print_dashed_line(H), nl,
-        print_board_content([H | T]), nl,
-        write([H | T]).
+        print_board_content([H | T]), nl.
 
 print_board_content([H | T]) :-
         print_board_row(H), nl,

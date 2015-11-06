@@ -10,4 +10,5 @@ place_xpiece(Game, Coords, New_game):-
         cell_spieces(New_cell, Spieces),
         cell_xpiece(New_cell, Player),
         board_set_cell(Board, Coords, New_cell, New_board),
-        game_set_board(Game, New_board, New_game).
+        game_dec_player_num_xpieces(Game, Player, Game1),
+        game_set_board(Game1, New_board, New_game).
