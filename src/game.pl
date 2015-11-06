@@ -166,8 +166,11 @@ convert_pattern_to_score(Game, Coords, New_game) :-
         game_board(Game, Board),
         game_player(Game, Player),
         board_xy(Board, Coords, Cell),
-        cell_convert_xpiece_to_spiece(Cell, Cell1),
-        board_set_cell(Board, Coords, Cell1, Board1),
+        %nl, write(Cell), nl,                                    %%% REMOVE
+        cell_set_top_piece(Cell, Player, Cell1),
+        cell_convert_xpiece_to_spiece(Cell1, Cell2),
+        %nl, write(Cell2), nl,                                   %%% REMOVE
+        board_set_cell(Board, Coords, Cell2, Board1),
         game_set_board(Game, Board1, Game1),
         game_inc_player_num_xpieces(Game1, Player, Game2),
         game_inc_player_score(Game2, Player, New_game).
@@ -175,3 +178,29 @@ convert_pattern_to_score(Game, Coords, New_game) :-
 print_game(Game) :-
         game_board(Game, Board),
         print_board(Board), nl, write(Game), nl.
+
+game_ended(Game) :- max_score(MaxScore), !,
+        game_ended(Game, MaxScore).
+game_ended(Game, MaxScore) :-
+        player_score(Game, 1, Score),
+        Score >= MaxScore.
+game_ended(Game, MaxScore) :-
+        player_score(Game, 2, Score),
+        Score >= MaxScore.
+
+player_score(Game, Player, Score) :-
+        game_board(Game, Board),
+        count_bases(Board, Player, Score).
+
+count_bases([], _, 0).
+count_bases([Row|Rest], Player, Count) :-
+        count_bases_row(Row, Player, Count1),
+        count_bases(Rest, Player, Count2),
+        Count is Count1+Count2.
+
+count_bases_row([], _, 0).
+count_bases_row([[[Player|_]|_]|Rest], Player, Count) :-
+        count_bases_row(Rest, Player, Count1),
+        Count is Count1+1.
+count_bases_row([_|Rest], Player, Count) :- 
+        count_bases_row(Rest, Player, Count).

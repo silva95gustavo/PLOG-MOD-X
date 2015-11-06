@@ -21,3 +21,24 @@ show_main_menu :-
         write('2. 2 Players'), nl,
         write('3. Bot vs Bot'), nl,
         write('0. Exit'), nl.
+
+show_end_game(Winner) :-
+        nl, nl,
+        write('  /$$$$$$                                          '), nl,
+        write(' /$$__  $$                                         '), nl,
+        write('| $$  \\__/  /$$$$$$  /$$$$$$/$$$$   /$$$$$$       '), nl,
+        write('| $$ /$$$$ |____  $$| $$_  $$_  $$ /$$__  $$       '), nl,
+        write('| $$|_  $$  /$$$$$$$| $$ \\ $$ \\ $$| $$$$$$$$     '), nl,
+        write('| $$  \\ $$ /$$__  $$| $$ | $$ | $$| $$_____/      '), nl,
+        write('|  $$$$$$/|  $$$$$$$| $$ | $$ | $$|  $$$$$$$       '), nl,
+        write(' \\______/  \\_______/|__/ |__/ |__/ \\_______/    '), nl, nl,
+        write('    /$$$$$$                                        '), nl,
+        write('   /$$__  $$                                       '), nl,
+        write('  | $$  \\ $$ /$$    /$$ /$$$$$$   /$$$$$$         '), nl,
+        write('  | $$  | $$|  $$  /$$//$$__  $$ /$$__  $$         '), nl,
+        write('  | $$  | $$ \\  $$/$$/| $$$$$$$$| $$  \\__/       '), nl,
+        write('  | $$  | $$  \\  $$$/ | $$_____/| $$              '), nl,
+        write('  |  $$$$$$/   \\  $/  |  $$$$$$$| $$              '), nl,
+        write('   \\______/     \\_/    \\_______/|__/            '), nl, nl,
+        write('          Congratulations player '), write(Winner), write('!'), nl,
+        write('              You are the winner!'), nl, nl.
