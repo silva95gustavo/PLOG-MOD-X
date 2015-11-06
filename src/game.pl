@@ -26,8 +26,8 @@ game_set_player_info(Game, Player, Player_info, New_game) :-
         replace(P2, Player_info, Game, New_game).
 game_inc_player_score(Game, Player, New_game) :-
         game_player_info(Game, Player, Player_info1),
-        player_info_score(Player_info1, Score), write('call 1'),
-        inc(Score, Score1), write('Score1: '), write(Score1),
+        player_info_score(Player_info1, Score),
+        inc(Score, Score1),
         player_info_set_score(Player_info1, Score1, Player_info),
         game_set_player_info(Game, Player, Player_info, New_game).
 game_dec_player_score(Game, Player, New_game) :-
@@ -43,9 +43,9 @@ game_inc_player_num_xpieces(Game, Player, New_game) :-
         player_info_set_num_xpieces(Player_info1, Num_xpieces1, Player_info),
         game_set_player_info(Game, Player, Player_info, New_game).
 game_dec_player_num_xpieces(Game, Player, New_game) :-
-        game_player_info(Game, Player, Player_info1),write('Player_info1: '), write(Player_info1),
-        player_info_num_xpieces(Player_info1, Num_xpieces), write('Num_xpieces: '), write(Num_xpieces), write('call 2'),
-        dec(Num_xpieces, Num_xpieces1), write('Num_xpieces1: '), write(Num_xpieces1),
+        game_player_info(Game, Player, Player_info1),
+        player_info_num_xpieces(Player_info1, Num_xpieces),
+        dec(Num_xpieces, Num_xpieces1),
         player_info_set_num_xpieces(Player_info1, Num_xpieces1, Player_info),
         game_set_player_info(Game, Player, Player_info, New_game).
                 
@@ -169,8 +169,7 @@ convert_pattern_to_score(Game, Coords, New_game) :-
         cell_convert_xpiece_to_spiece(Cell, Cell1),
         board_set_cell(Board, Coords, Cell1, Board1),
         game_set_board(Game, Board1, Game1),
-        write(Game1),
-        game_dec_player_num_xpieces(Game1, Player, Game2),
+        game_inc_player_num_xpieces(Game1, Player, Game2),
         game_inc_player_score(Game2, Player, New_game).
 
 print_game(Game) :-
