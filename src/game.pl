@@ -26,13 +26,13 @@ game_set_player_info(Game, Player, Player_info, New_game) :-
         replace(P2, Player_info, Game, New_game).
 game_inc_player_score(Game, Player, New_game) :-
         game_player_info(Game, Player, Player_info1),
-        player_info_num_xpieces(Player_info1, Score), write('call 1'),
+        player_info_score(Player_info1, Score), write('call 1'),
         inc(Score, Score1), write('Score1: '), write(Score1),
         player_info_set_score(Player_info1, Score1, Player_info),
         game_set_player_info(Game, Player, Player_info, New_game).
 game_dec_player_score(Game, Player, New_game) :-
         game_player_info(Game, Player, Player_info1),
-        player_info_num_xpieces(Player_info1, Score),
+        player_info_score(Player_info1, Score),
         dec(Score, Score1),
         player_info_set_score(Player_info1, Score1, Player_info),
         game_set_player_info(Game, Player, Player_info, New_game).
@@ -40,13 +40,13 @@ game_inc_player_num_xpieces(Game, Player, New_game) :-
         game_player_info(Game, Player, Player_info1),
         player_info_num_xpieces(Player_info1, Num_xpieces),
         inc(Num_xpieces, Num_xpieces1),
-        player_info_set_score(Player_info1, Num_xpieces1, Player_info),
+        player_info_set_num_xpieces(Player_info1, Num_xpieces1, Player_info),
         game_set_player_info(Game, Player, Player_info, New_game).
 game_dec_player_num_xpieces(Game, Player, New_game) :-
         game_player_info(Game, Player, Player_info1),write('Player_info1: '), write(Player_info1),
         player_info_num_xpieces(Player_info1, Num_xpieces), write('Num_xpieces: '), write(Num_xpieces), write('call 2'),
         dec(Num_xpieces, Num_xpieces1), write('Num_xpieces1: '), write(Num_xpieces1),
-        player_info_set_score(Player_info1, Num_xpieces1, Player_info),
+        player_info_set_num_xpieces(Player_info1, Num_xpieces1, Player_info),
         game_set_player_info(Game, Player, Player_info, New_game).
                 
 player_info_score([Score, _], Score).
