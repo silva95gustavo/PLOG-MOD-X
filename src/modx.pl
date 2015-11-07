@@ -43,7 +43,8 @@ play :-
 play(Game) :- game_ended(Game), !,
         game_board(Game, Board),
         print_board(Board),
-        game_player(Game, Winner),
+        game_next_player(Game, New_game),
+        game_player(New_game, Winner),
         show_end_game(Winner).
         
 play(Game) :-
@@ -57,7 +58,9 @@ make_play_joker(Game, New_game) :-
         num_jokers_to_place(Board, Jokers),
         ask_for_jokers(Jokers),
         read_coords(Coords),
-        place_joker(Game, Coords, New_game).
+        place_joker(Game, Coords, New_game1),
+        game_next_player(New_game1, New_game),
+        !.
 
 make_play_joker(Game, New_game) :-
         write('Invalid location! Please try again.'), nl,
@@ -66,7 +69,7 @@ make_play_joker(Game, New_game) :-
 make_play(Game, New_game) :-
         game_board(Game, Board),
         num_jokers_to_place(Board, Jokers),
-        Jokers > 0,
+        Jokers > 0, !,
         make_play_joker(Game, New_game).
 
 make_play(Game, New_game) :-
