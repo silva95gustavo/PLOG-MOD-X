@@ -6,6 +6,7 @@
 :- now(Timestamp),
    setrand(Timestamp).
 
+:- ensure_loaded('ai.pl').
 :- ensure_loaded('utils.pl').
 :- ensure_loaded('menus.pl').
 :- ensure_loaded('cli.pl').
@@ -35,7 +36,7 @@ count_xpieces(Xpiece, [Line | T], N) :-
         count_xpieces(Xpiece, T, N2),
         N is N1 + N2.
 
-play :- show_main_menu.
+play :- show_intro.
 
 play(Game) :- game_ended(Game), !,
         game_board(Game, Board),
@@ -80,12 +81,16 @@ end_play(Game, New_game) :-
         check_patterns(Game, New_scores),
         %New_scores = [[0, 0], [1, 1]],
         convert_patterns_to_score(Game, New_scores, Game1),
-        game_next_player(Game1, New_game).
+        game_next_player(Game1, New_game),
+        write('GO BOT :D'), nl,
+        available_moves(Game1, Moves),
+        ai_evaluate_and_choose(Moves, place_xpiece, game_value, Game1, BestMove),
+        write('BOT SAYS: '), nl,
+        write(BestMove).
         
         
 read_coords([X, Y]) :-
         write('X? '),
-        read(X),
+        cli_get_digit(X),
         write('Y? '),
-        read(Y).
-       
+        cli_get_digit(Y).
