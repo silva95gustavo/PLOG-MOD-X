@@ -48,6 +48,8 @@ game_dec_player_num_xpieces(Game, Player, New_game) :-
         dec(Num_xpieces, Num_xpieces1),
         player_info_set_num_xpieces(Player_info1, Num_xpieces1, Player_info),
         game_set_player_info(Game, Player, Player_info, New_game).
+
+game_value(_, 0). % TODO
                 
 player_info_score([Score, _], Score).
 player_info_num_xpieces([_, Num_xpieces], Num_xpieces).

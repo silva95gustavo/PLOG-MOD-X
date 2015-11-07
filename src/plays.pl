@@ -23,3 +23,6 @@ place_joker(Game, Coords, New_game) :-
         board_set_cell(Board, Coords, New_cell, New_board),
         game_set_board(Game, New_board, New_game),
         check_patterns(New_game, []).
+
+available_moves(Game, Moves):-
+        Moves = [[1, 1]]. % TODO
