@@ -40,7 +40,7 @@ play :-
         show_main_menu,
         play(Game).
 
-play(Game) :- game_ended(Game),
+play(Game) :- game_ended(Game), !,
         game_board(Game, Board),
         print_board(Board),
         game_player(Game, Winner),
