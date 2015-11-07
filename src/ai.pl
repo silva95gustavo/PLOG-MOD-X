@@ -1,5 +1,5 @@
-ai_evaluate_and_choose([Move | Moves], MovePred, ValuePred, Game, BestMove) :-
-        ai_evaluate_and_choose_aux([Move | Moves], MovePred, ValuePred, Game, [0, -99999], BestMove).
+ai_evaluate_and_choose([Move | Moves], MovePred, ValuePred, Game, BestMove) :- fail.
+        %ai_evaluate_and_choose_aux([Move | Moves], MovePred, ValuePred, Game, [0, -99999], BestMove).
 
 ai_evaluate_and_choose_aux([Move | Moves], MovePred, ValuePred, Game, Record, BestMove) :-
         M =.. [MovePred, Game, Move, NewGame],

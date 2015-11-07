@@ -10,7 +10,8 @@ show_intro :-
         write('        | $$\\  $ | $$| $$  | $$| $$  | $$       /$$/\\  $$        '), nl,
         write('        | $$ \\/  | $$|  $$$$$$/| $$$$$$$/      | $$  \\ $$        '), nl,
         write('        |__/     |__/ \\______/ |_______/       |__/  |__/        '), nl,
-        nl, nl,
+        nl,
+        nl,
         write('                         Press enter to play                      '), nl,
         nl,
         get_char(_),
@@ -21,22 +22,24 @@ show_main_menu :-
         write('2. 2 Players'), nl,
         write('3. Bot vs Bot'), nl,
         write('0. Exit'), nl,
-        cli_get_char(C),
-        main_menu(C), !.
+        cli_get_digit(D),
+        D >= 0,
+        D =< 3, !,
+        main_menu(D).
 show_main_menu :-
         write('Invalid option! Please try again.'), nl,
         show_main_menu.
         
-main_menu('1') :-
+main_menu(1) :-
         start_game(Game),
         play(Game), !.
-main_menu('2') :-
+main_menu(2) :-
         start_game(Game),
         play(Game), !.
-main_menu('3') :-
+main_menu(3) :-
         start_game(Game),
         play(Game), !.
-main_menu('0').
+main_menu(0).
 
 show_end_game(Winner) :-
         nl, nl,
