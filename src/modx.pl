@@ -56,9 +56,8 @@ make_play_joker(Game, New_game) :-
         num_jokers_to_place(Board, Jokers),
         ask_for_jokers(Jokers),
         read_coords(Coords),
-        place_joker(Game, Coords, New_game1),
-        game_next_player(New_game1, New_game),
-        !.
+        place_joker(Game, Coords, New_game1), !,
+        game_next_player(New_game1, New_game).
 
 make_play_joker(Game, New_game) :-
         write('Invalid location! Please try again.'), nl,
@@ -82,7 +81,6 @@ make_play(Game, New_game) :-
 
 end_play(Game, New_game) :-
         check_patterns(Game, New_scores),
-        %New_scores = [[0, 0], [1, 1]],
         convert_patterns_to_score(Game, New_scores, Game1),
         game_next_player(Game1, New_game),
         write('GO BOT :D'), nl,

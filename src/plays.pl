@@ -25,4 +25,4 @@ place_joker(Game, Coords, New_game) :-
         check_patterns(New_game, []).
 
 available_moves(Game, Moves):-
-        Moves = [[1, 1]]. % TODO
+        Moves = [[1, 1], [2, 2]]. % TODO
