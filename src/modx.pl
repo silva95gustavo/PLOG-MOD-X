@@ -35,10 +35,7 @@ count_xpieces(Xpiece, [Line | T], N) :-
         count_xpieces(Xpiece, T, N2),
         N is N1 + N2.
 
-play :-
-        start_game(Game),
-        show_main_menu,
-        play(Game).
+play :- show_main_menu.
 
 play(Game) :- game_ended(Game), !,
         game_board(Game, Board),
