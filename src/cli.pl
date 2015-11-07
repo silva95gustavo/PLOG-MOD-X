@@ -12,5 +12,6 @@ ask_for_jokers(Num) :-
 ask_for_jokers_aux(Num) :-
         Num is 1,
         write(' joker').
-ask_for_jokers_aux(_) :-
+ask_for_jokers_aux(Num) :-
+        Num > 1,
         write(' jokers').
