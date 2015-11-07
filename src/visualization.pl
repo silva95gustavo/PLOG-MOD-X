@@ -12,16 +12,15 @@ marker_to_ascii(2, 'g').
 print_board([H | T]) :-
         write('       0       1       2       3       4       5       6       7'), nl,
         print_dashed_line(H), nl,
-        print_board_content([H | T]),
+        print_board_content([H | T], 0),
         write('       0       1       2       3       4       5       6       7'), nl.
 
-print_board_content([]) :- !.
-print_board_content([H | T]) :-
-        length([H | T], N1),
-        N is N1 - 1,
+print_board_content([], _) :- !.
+print_board_content([H | T], N) :-
+        N1 is N + 1,
         print_board_row(H, N), nl,
         print_dashed_line(H), nl,
-        print_board_content(T).
+        print_board_content(T, N1).
 
 print_board_row([H | T], N) :-
         write('   |'), print_board_line_aux([H | T], 1), nl,
