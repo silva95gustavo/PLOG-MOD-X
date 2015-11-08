@@ -32,13 +32,13 @@ show_main_menu :-
         
 main_menu(1) :-
         start_game(Game),
-        play(Game), !.
+        play_1v1(Game), !.
 main_menu(2) :-
         start_game(Game),
-        play(Game), !.
+        play_1v1(Game), !.
 main_menu(3) :-
         start_game(Game),
-        play(Game), !.
+        play_botvbot(Game), !.
 main_menu(0).
 
 show_end_game(Winner) :-

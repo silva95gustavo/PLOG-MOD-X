@@ -38,30 +38,48 @@ count_xpieces(Xpiece, [Line | T], N) :-
 
 play :- show_intro.
 
-play(Game) :- game_ended(Game), !,
+play_1v1(Game) :- game_ended(Game), !,
         game_board(Game, Board),
         print_board(Board),
         game_next_player(Game, New_game),
         game_player(New_game, Winner),
         show_end_game(Winner).
         
-play(Game) :-
+play_1v1(Game) :-
         print_game(Game),
         make_play(Game, Game1),
         end_play(Game1, New_game),
-        play(New_game).
+        play_1v1(New_game).
+
+play_botvbot(Game) :- game_ended(Game), !,
+        game_board(Game, Board),
+        print_board(Board),
+        game_next_player(Game, New_game),
+        game_player(New_game, Winner),
+        show_end_game(Winner).
+        
+play_botvbot(Game) :-
+        print_game(Game),
+        make_play_bot(Game, Game1),
+        end_play(Game1, New_game),
+        play_botvbot(New_game).
 
 make_play_joker(Game, New_game) :-
         game_board(Game, Board),
         num_jokers_to_place(Board, Jokers),
         ask_for_jokers(Jokers),
         read_coords(Coords),
-        place_joker(Game, Coords, New_game1), !,
+        place_xpiece(Game, Coords, New_game1), !,
         game_next_player(New_game1, New_game).
 
 make_play_joker(Game, New_game) :-
         write('Invalid location! Please try again.'), nl,
         make_play_joker(Game, New_game).
+
+make_play_bot(Game, New_game) :-
+        available_moves(Game, Moves),
+        ai_evaluate_and_choose(Moves, place_xpiece, game_value, Game, BestMove),
+        place_xpiece(Game, BestMove, New_game).
 
 make_play(Game, New_game) :-
         game_board(Game, Board),
@@ -82,12 +100,7 @@ make_play(Game, New_game) :-
 end_play(Game, New_game) :-
         check_patterns(Game, New_scores),
         convert_patterns_to_score(Game, New_scores, Game1),
-        game_next_player(Game1, New_game),
-        write('GO BOT :D'), nl,
-        available_moves(Game1, Moves),
-        ai_evaluate_and_choose(Moves, place_xpiece, game_value, Game1, BestMove),
-        write('BOT SAYS: '), nl,
-        write(BestMove).
+        game_next_player(Game1, New_game).
         
         
 read_coords([X, Y]) :-

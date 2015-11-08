@@ -179,13 +179,20 @@ convert_pattern_to_score(Game, Coords, New_game) :-
 
 print_game(Game) :-
         game_board(Game, Board),
-        print_board(Board), nl, write(Game), nl.
+        print_board(Board), nl.
 
-game_ended(Game) :- max_score(MaxScore), !,
+game_ended(Game) :-
+        max_score(MaxScore),
         game_ended(Game, MaxScore).
+game_ended(Game) :-
+        game_player_info(Game, 1, Player_info),
+        player_info_num_xpieces(Player_info, 0), !.
+game_ended(Game) :-
+        game_player_info(Game, 2, Player_info),
+        player_info_num_xpieces(Player_info, 0), !.
 game_ended(Game, MaxScore) :-
         player_score(Game, 1, Score),
-        Score >= MaxScore.
+        Score >= MaxScore, !.
 game_ended(Game, MaxScore) :-
         player_score(Game, 2, Score),
         Score >= MaxScore.

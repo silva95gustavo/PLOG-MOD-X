@@ -2,13 +2,11 @@ ai_evaluate_and_choose([Move | Moves], MovePred, ValuePred, Game, BestMove) :-
         ai_evaluate_and_choose_aux([Move | Moves], MovePred, ValuePred, Game, [0, -99999], BestMove).
 
 ai_evaluate_and_choose_aux([Move | Moves], MovePred, ValuePred, Game, Record, BestMove) :-
-        write('Move: '), write(Move), nl,
         M =.. [MovePred, Game, Move, NewGame],
         M,
         V =.. [ValuePred, NewGame, Value],
         V,
         ai_update(Move, Value, Record, [BestMove, BestValue]),
-        write('aaa'),
         ai_evaluate_and_choose_aux(Moves, MovePred, ValuePred, NewGame, [BestMove, BestValue], BestMove).
 ai_evaluate_and_choose_aux([], _, _, _, _, _).
 
