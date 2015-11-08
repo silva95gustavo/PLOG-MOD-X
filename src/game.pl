@@ -1,6 +1,6 @@
 % Game
 
-start_game(Game) :-
+start_game(Game, MaxScore, Difficulty) :-
         game_board(Game, Board),
         create_board(Board),
         game_player(Game, 1),
@@ -8,15 +8,17 @@ start_game(Game) :-
         num_xpieces(N),
         player_info_num_xpieces(Player_info, N),
         game_player_info(Game, 1, Player_info),
-        game_player_info(Game, 2, Player_info).
+        game_player_info(Game, 2, Player_info),
+        game_max_score(Game, MaxScore),
+        game_difficulty(Game, Difficulty).
 
 game_board(Game, Board) :- nth0(0, Game, Board).
 game_player(Game, Player) :- nth0(1, Game, Player).
 game_player_info(Game, Player, Player_info) :-
         P2 is Player + 1,
         nth0(P2, Game, Player_info).
-
-max_score(_, 8). % TODO
+game_max_score(Game, MaxScore) :- nth0(4, Game, MaxScore).
+game_difficulty(Game, Difficulty) :- nth0(5, Game, Difficulty).
 
 game_player_scores(Game, [Score1, Score2]) :-
         game_player_info(Game, 1, Info1),
@@ -197,7 +199,7 @@ print_game(Game) :-
         print_board(Board), nl.
 
 game_ended(Game) :-
-        max_score(Game, MaxScore),
+        game_max_score(Game, MaxScore),
         game_ended(Game, MaxScore).
 game_ended(Game) :-
         game_player_info(Game, 1, Player_info),

@@ -27,23 +27,26 @@ show_main_menu :-
         cli_get_digit(D),
         D >= 0,
         D =< 3, !,
-        main_menu(D).
+        ask_max_score(Score),
+        main_menu(D, Score).
 show_main_menu :-
         write('Invalid option! Please try again.'), nl,
         show_main_menu.
         
-main_menu(1) :-
-        start_game(Game),
+main_menu(1, Max_Score) :-
+        ask_difficulty(Difficulty),
+        start_game(Game, Max_Score, Difficulty),
         randomize_order_1vbot(Preds),
         write(Preds), nl,
         play_1vbot(Game, Preds), !.
-main_menu(2) :-
-        start_game(Game),
+main_menu(2, Max_Score) :-
+        start_game(Game, Max_Score, -1),
         play_1v1(Game), !.
-main_menu(3) :-
-        start_game(Game),
+main_menu(3, Max_Score) :-
+        ask_difficulty(Difficulty),
+        start_game(Game, Max_Score, Difficulty),
         play_botvbot(Game), !.
-main_menu(0).
+main_menu(0, _).
 
 randomize_order_1vbot(Preds) :-
         random(0, 2, 1),
@@ -55,7 +58,7 @@ randomize_order_1vbot(Preds) :-
 
 ask_max_score(Score) :-
         write('Please insert the game\'s max score:'), nl,
-        cli_get_digit(D),
+        cli_get_number(D),
         D >= 0, !,
         Score is D.
 ask_max_score(Score) :-

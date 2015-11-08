@@ -17,8 +17,10 @@
 :- ensure_loaded('cell.pl').
 :- ensure_loaded('visualization.pl').
 :- ensure_loaded('test.pl').       
-        
-        
+       
+test :- cli_get_number(Num),
+        write(Num), nl. 
+
 % Main
 
 count_xpieces_line(_, [], 0).
@@ -54,7 +56,8 @@ play_1vbot(Game, Preds) :-
         end_play(Game1, New_game),
         play_1vbot(New_game, Preds).
 
-play_1v1(Game) :- game_ended(Game), !,
+play_1v1(Game) :- 
+        game_ended(Game), !,
         game_board(Game, Board),
         print_board(Board),
         game_winner(Game, Winner),
@@ -66,7 +69,8 @@ play_1v1(Game) :-
         end_play(Game1, New_game),
         play_1v1(New_game).
 
-play_botvbot(Game) :- game_ended(Game), !,
+play_botvbot(Game) :- 
+        game_ended(Game), !,
         game_board(Game, Board),
         print_board(Board),
         game_winner(Game, Winner),
