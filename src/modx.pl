@@ -16,10 +16,7 @@
 :- ensure_loaded('plays.pl').
 :- ensure_loaded('cell.pl').
 :- ensure_loaded('visualization.pl').
-:- ensure_loaded('test.pl').       
-       
-test :- cli_get_number(Num),
-        write(Num), nl. 
+:- ensure_loaded('test.pl').
 
 % Main
 
