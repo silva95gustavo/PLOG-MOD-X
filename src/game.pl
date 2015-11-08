@@ -16,6 +16,18 @@ game_player_info(Game, Player, Player_info) :-
         P2 is Player + 1,
         nth0(P2, Game, Player_info).
 
+max_score(8). % TODO
+
+game_player_scores(Game, [Score1, Score2]) :-
+        game_player_info(Game, 1, Info1),
+        game_player_info(Game, 2, Info2),
+        player_info_score(Info1, Score1),
+        player_info_score(Info2, Score2).
+
+game_player_score(Game, Player, Score) :-
+        game_player_info(Game, Player, Info),
+        player_info_score(Info, Score).
+
 game_set_board(Game, Board, New_game) :- replace(0, Board, Game, New_game).
 game_next_player(Game, New_game) :-
         game_player(Game, Player),
@@ -169,10 +181,8 @@ convert_pattern_to_score(Game, Coords, New_game) :-
         game_board(Game, Board),
         game_player(Game, Player),
         board_xy(Board, Coords, Cell),
-        %nl, write(Cell), nl,                                    %%% REMOVE
         cell_set_top_piece(Cell, Player, Cell1),
         cell_convert_xpiece_to_spiece(Cell1, Cell2),
-        %nl, write(Cell2), nl,                                   %%% REMOVE
         board_set_cell(Board, Coords, Cell2, Board1),
         game_set_board(Game, Board1, Game1),
         game_inc_player_num_xpieces(Game1, Player, Game2),
@@ -197,6 +207,10 @@ game_ended(Game, MaxScore) :-
 game_ended(Game, MaxScore) :-
         player_score(Game, 2, Score),
         Score >= MaxScore.
+
+game_winner(Game, Winner) :-
+        game_next_player(Game, New_game),
+        game_player(New_game, Winner).
 
 player_score(Game, Player, Score) :-
         game_board(Game, Board),

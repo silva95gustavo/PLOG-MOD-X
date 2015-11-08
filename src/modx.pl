@@ -41,8 +41,7 @@ play :- show_intro.
 play_1v1(Game) :- game_ended(Game), !,
         game_board(Game, Board),
         print_board(Board),
-        game_next_player(Game, New_game),
-        game_player(New_game, Winner),
+        game_winner(Game, Winner),
         show_end_game(Winner).
         
 play_1v1(Game) :-
@@ -54,8 +53,7 @@ play_1v1(Game) :-
 play_botvbot(Game) :- game_ended(Game), !,
         game_board(Game, Board),
         print_board(Board),
-        game_next_player(Game, New_game),
-        game_player(New_game, Winner),
+        game_winner(Game, Winner),
         show_end_game(Winner).
         
 play_botvbot(Game) :-
