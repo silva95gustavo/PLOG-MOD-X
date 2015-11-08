@@ -1,5 +1,7 @@
 % Plays
 
+%place_xpiece(+Game, +Coords, -New_game)
+% Places a normal piece or a joker.
 place_xpiece(Game, Coords, New_game):-
         nth0(0, Coords, X),
         nth0(1, Coords, Y),
@@ -15,10 +17,10 @@ place_xpiece(Game, Coords, New_game):-
         board_set_cell(Board, Coords, New_cell, New_board),
         game_dec_player_num_xpieces(Game, Player, Game1),
         game_set_board(Game1, New_board, New_game).
-
 place_xpiece(Game, Coords, New_game) :-
         place_joker(Game, Coords, New_game).
 
+%place_joker(+Game, +Coords, -New_game)
 place_joker(Game, Coords, New_game) :-
         game_board(Game, Board),
         board_xy(Board, Coords, Cell),
@@ -30,6 +32,8 @@ place_joker(Game, Coords, New_game) :-
         game_set_board(Game, New_board, New_game),
         check_patterns(New_game, []).
 
+%available_moves(+Game, -Moves)
+% Lists all possible places where a piece can be placed acording to the current Game state.
 available_moves(Game, Moves) :-
         game_board(Game, Board),
         length(Board, Height),

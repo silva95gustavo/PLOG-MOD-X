@@ -1,5 +1,6 @@
 % Game
 
+%start_game(-Game, +MaxScore, +Difficulty)
 start_game(Game, MaxScore, Difficulty) :-
         game_board(Game, Board),
         create_board(Board),
@@ -12,50 +13,74 @@ start_game(Game, MaxScore, Difficulty) :-
         game_max_score(Game, MaxScore),
         game_difficulty(Game, Difficulty).
 
+%game_board(+Game, -Board)
 game_board(Game, Board) :- nth0(0, Game, Board).
+
+%game_player(+Game, -Player)
 game_player(Game, Player) :- nth0(1, Game, Player).
+
+%game_player_info(+Game, +Player, -Player_info)
 game_player_info(Game, Player, Player_info) :-
         P2 is Player + 1,
         nth0(P2, Game, Player_info).
+
+%game_max_score(+Game, -MaxScore)
 game_max_score(Game, MaxScore) :- nth0(4, Game, MaxScore).
+
+%game_difficulty(+Game, -Difficulty)
 game_difficulty(Game, Difficulty) :- nth0(5, Game, Difficulty).
 
+%game_player_scores(+Game, [-Score1, -Score2])
 game_player_scores(Game, [Score1, Score2]) :-
         game_player_info(Game, 1, Info1),
         game_player_info(Game, 2, Info2),
         player_info_score(Info1, Score1),
         player_info_score(Info2, Score2).
 
+%game_player_score(+Game, +Player, -Score)
 game_player_score(Game, Player, Score) :-
         game_player_info(Game, Player, Info),
         player_info_score(Info, Score).
 
+%game_set_board(+Game, +Board, -New_game)
 game_set_board(Game, Board, New_game) :- replace(0, Board, Game, New_game).
+
+%game_next_player(+Game, -New_game)
 game_next_player(Game, New_game) :-
         game_player(Game, Player),
         next_player(Player, New_player),
         replace(1, New_player, Game, New_game).
+
+%game_set_player_info(+Game, +Player, +Player_info, -New_game)
 game_set_player_info(Game, Player, Player_info, New_game) :-
         P2 is Player + 1,
         replace(P2, Player_info, Game, New_game).
+
+%game_inc_player_score(+Game, +Player, -New_game)
 game_inc_player_score(Game, Player, New_game) :-
         game_player_info(Game, Player, Player_info1),
         player_info_score(Player_info1, Score),
         inc(Score, Score1),
         player_info_set_score(Player_info1, Score1, Player_info),
         game_set_player_info(Game, Player, Player_info, New_game).
+
+%game_dec_player_score(+Game, +Player, -New_game)
 game_dec_player_score(Game, Player, New_game) :-
         game_player_info(Game, Player, Player_info1),
         player_info_score(Player_info1, Score),
         dec(Score, Score1),
         player_info_set_score(Player_info1, Score1, Player_info),
         game_set_player_info(Game, Player, Player_info, New_game).
+
+%game_inc_player_num_xpieces(+Game, +Player, -New_game)
 game_inc_player_num_xpieces(Game, Player, New_game) :-
         game_player_info(Game, Player, Player_info1),
         player_info_num_xpieces(Player_info1, Num_xpieces),
         inc(Num_xpieces, Num_xpieces1),
         player_info_set_num_xpieces(Player_info1, Num_xpieces1, Player_info),
         game_set_player_info(Game, Player, Player_info, New_game).
+
+%game_dec_player_num_xpieces(+Game, +Player, -New_game)
 game_dec_player_num_xpieces(Game, Player, New_game) :-
         game_player_info(Game, Player, Player_info1),
         player_info_num_xpieces(Player_info1, Num_xpieces),
@@ -63,21 +88,32 @@ game_dec_player_num_xpieces(Game, Player, New_game) :-
         player_info_set_num_xpieces(Player_info1, Num_xpieces1, Player_info),
         game_set_player_info(Game, Player, Player_info, New_game).
 
+%game_value(+Game, -Value)
 game_value(Game, Value) :-
         game_player(Game, Curr_Player),
         game_player_score(Game, Curr_Player, Curr_Score),
         next_player(Curr_Player, Other_Player),
         game_player_score(Game, Other_Player, Other_Score),
         Value is Curr_Score-Other_Score.                        %(Max_Score-(Max_Score - Curr_Score)) - (Max_Score-(Max_Score - Other_Score)).
-                
+
+%player_info_score(+Player_info, -Score).
 player_info_score([Score, _], Score).
+
+%player_info_num_xpieces(+Player_info, -Num_xpieces)
 player_info_num_xpieces([_, Num_xpieces], Num_xpieces).
+
+%player_info_set_score(+Player_info, +Score, -New_player_info)
 player_info_set_score(Player_info, Score, New_player_info) :- replace(0, Score, Player_info, New_player_info).
+
+%player_info_set_num_xpieces(+Player_info, +Num_xpieces, -New_player_info)
 player_info_set_num_xpieces(Player_info, Num_xpieces, New_player_info) :- replace(1, Num_xpieces, Player_info, New_player_info).
 
+%next_player(+Current_player, -Next_player)
 next_player(1, 2).
 next_player(2, 1).
 
+%check_patterns(+Game, -New_scores)
+% Returns a list containing the coords of all the pieces that form one or more scoring patterns in the board.
 check_patterns(Game, New_scores) :-
         check_patterns_aux(Game, [0, 0], [], New_scores).
 check_patterns_aux(Game, [X, Y], Scores, Scores) :-
@@ -194,6 +230,7 @@ convert_pattern_to_score(Game, Coords, New_game) :-
         game_inc_player_num_xpieces(Game1, Player, Game2),
         game_inc_player_score(Game2, Player, New_game).
 
+%show_scores(+Game)
 show_scores(Game) :-
         game_player_info(Game, 1, P1Info),
         game_player_info(Game, 2, P2Info),
@@ -201,11 +238,14 @@ show_scores(Game) :-
         player_info_score(P2Info, P2Score),
         print_scores(P1Score, P2Score).
 
+%print_game(+Game)
 print_game(Game) :-
         game_board(Game, Board),
         print_board(Board), 
         show_scores(Game), nl.
 
+%game_ended(+Game)
+% Is true if the game's state is final.
 game_ended(Game) :-
         game_max_score(Game, MaxScore),
         game_ended(Game, MaxScore).
@@ -222,14 +262,18 @@ game_ended(Game, MaxScore) :-
         player_score(Game, 2, Score),
         Score >= MaxScore.
 
+%game_winner(+Game, -Winner)
+% Winner is the ID of the winning player.
 game_winner(Game, Winner) :-
         game_next_player(Game, New_game),
         game_player(New_game, Winner).
 
+%player_score(+Game, +Player, -Score)
 player_score(Game, Player, Score) :-
         game_board(Game, Board),
         count_bases(Board, Player, Score).
 
+%count_bases(+Board, +Player, -Count)
 count_bases([], _, 0).
 count_bases([Row|Rest], Player, Count) :-
         count_bases_row(Row, Player, Count1),
