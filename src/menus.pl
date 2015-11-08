@@ -53,14 +53,25 @@ randomize_order_1vbot(Preds) :-
 randomize_order_1vbot(Preds) :-
         order1_1vbot(Preds).
 
-get_max_score(Score) :-
+ask_max_score(Score) :-
         write('Please insert the game\'s max score:'), nl,
         cli_get_digit(D),
         D >= 0, !,
         Score is D.
-get_max_score(Score) :-
+ask_max_score(Score) :-
         write('Invalid option! Please try again.'), nl,
-        get_max_score(Score).
+        ask_max_score(Score).
+
+ask_difficulty(Diff) :-
+        write('1. Easy'), nl,
+        write('2. Hard'), nl,
+        cli_get_digit(D),
+        D > 0,
+        D < 2, !,
+        Diff is D.
+ask_difficulty(Diff) :-
+        write('Invalid option! Please try again.'), nl,
+        ask_difficulty(Diff).
 
 order1_1vbot([make_play, make_play_bot]).
 order2_1vbot([make_play_bot, make_play]).
