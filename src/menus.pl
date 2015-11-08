@@ -53,6 +53,15 @@ randomize_order_1vbot(Preds) :-
 randomize_order_1vbot(Preds) :-
         order1_1vbot(Preds).
 
+get_max_score(Score) :-
+        write('Please insert the game\'s max score:'), nl,
+        cli_get_digit(D),
+        D >= 0, !,
+        Score is D.
+get_max_score(Score) :-
+        write('Invalid option! Please try again.'), nl,
+        get_max_score(Score).
+
 order1_1vbot([make_play, make_play_bot]).
 order2_1vbot([make_play_bot, make_play]).
 
