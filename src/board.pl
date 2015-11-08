@@ -1,14 +1,17 @@
 % Board
 
+%board_xy(+Board, +[X, Y], -Cell)
 board_xy(Board, [X, Y], Cell) :-
         nth0(Y, Board, Line),
         nth0(X, Line, Cell).
 
+%num_jokers_to_place(+Board, -N)
 num_jokers_to_place(Board, N) :-
         num_jokers(J),
         count_xpieces(0, Board, N1),
         N is J - N1.
 
+%create_board(-Board)
 create_board(Board) :-
         board_size(Size),
         create_board(Size, Board1),
@@ -46,7 +49,8 @@ create_board_place_jokers_aux(Board, New_board, N, Width, Total) :-
         create_board_place_jokers_aux(Board1, New_board, N1, Width, Total).
 
 create_board_place_jokers_aux(Board, New_board, N, Width, Total) :- create_board_place_jokers_aux(Board, New_board, N, Width, Total).
-        
+
+%board_random_coords(+Board, -[X, Y])
 board_random_coords(Board, [X, Y]) :-
         board_get_size(Board, Width, Height),
         Total_size is Width * Height,
@@ -55,12 +59,14 @@ board_random_coords(Board, [X, Y]) :-
         Mod is R mod Width,
         X = Div,
         Y = Mod.
-        
+
+%board_set_cell(+Board, +[X, Y], +Cell, -New_board)
 board_set_cell(Board, [X, Y], Cell, New_board) :-
         nth0(Y, Board, Line),
         replace(X, Cell, Line, New_line),
         replace(Y, New_line, Board, New_board).
 
+%board_get_size(+[H | T], -Width, -Height)
 board_get_size([H | T], Width, Height) :-
         length([H | T], Height),
         length(H, Width).
