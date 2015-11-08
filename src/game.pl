@@ -287,6 +287,7 @@ count_bases_row([[[Player|_]|_]|Rest], Player, Count) :-
 count_bases_row([_|Rest], Player, Count) :- 
         count_bases_row(Rest, Player, Count).
 
+%game_update_scores(+Game, -New_Game)
 game_update_scores([Board, Player, P1Info, P2Info, MS, Diff], [Board, Player, P1InfoNew, P2InfoNew, MS, Diff]) :-
         board_get_scores(Board, P1Score, P2Score),
         player_info_set_score(P1Info, P1Score, P1InfoNew),

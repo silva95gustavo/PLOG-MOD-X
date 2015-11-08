@@ -1,8 +1,12 @@
+%ai_bot_random(+MovesPred, +Game, -Move)
+% Bot chooses a move randomly
 ai_bot_random(MovesPred, Game, Move) :-
         Ms =.. [MovesPred, Game, Moves],
         Ms,
         random_member(Move, Moves).
 
+%ai_bot_greedy(+MovesPred, +MovePred, +ValuePred, +Game, -BestMove)
+% Bot tries to choose the best move based on the score after two plays
 ai_bot_greedy(MovesPred, MovePred, ValuePred, Game, BestMove) :-
         Ms =.. [MovesPred, Game, Moves],
         Ms,

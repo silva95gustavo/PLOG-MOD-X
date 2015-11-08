@@ -124,7 +124,7 @@ end_play(Game, New_game) :-
         game_update_scores(Game1, Game2),
         game_next_player(Game2, New_game).
         
-        
+%read_coords(-Coords)
 read_coords([X, Y]) :-
         write('X? '),
         cli_get_digit(X),

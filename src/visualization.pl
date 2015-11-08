@@ -9,6 +9,7 @@ marker_to_ascii(-1, ' ').
 marker_to_ascii(1, 'r').
 marker_to_ascii(2, 'g').
 
+%print_board(+Board)
 print_board([H | T]) :-
         write('      0       1       2       3       4       5       6       7'), nl,
         print_dashed_line(H), nl,
