@@ -70,7 +70,7 @@ ask_difficulty(Diff) :-
         write('2. Hard'), nl,
         cli_get_digit(D),
         D > 0,
-        D < 2, !,
+        D =< 2, !,
         Diff is D.
 ask_difficulty(Diff) :-
         write('Invalid option! Please try again.'), nl,

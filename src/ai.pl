@@ -1,8 +1,13 @@
+ai_bot_random(MovesPred, Game, Move) :-
+        Ms =.. [MovesPred, Game, Moves],
+        Ms,
+        random_member(Move, Moves).
+
 ai_bot_greedy(MovesPred, MovePred, ValuePred, Game, BestMove) :-
         Ms =.. [MovesPred, Game, Moves],
         Ms,
-        ai_evaluate_and_choose_aux(Moves, MovePred, ValuePred, Game, [[0, 0], -99999], BestMoves1),
-        ai_bot_greedy_aux(BestMoves1, MovesPred, MovePred, ValuePred, Game, [[0, 0], -99999], BestMoves),
+        ai_evaluate_and_choose_aux(Moves, MovePred, ValuePred, Game, [[0, 0], -99999], [BestMoves1 | _]),
+        ai_bot_greedy_aux(BestMoves1, MovesPred, MovePred, ValuePred, Game, [[0, 0], -99999], [BestMoves | _]),
         random_member(BestMove, BestMoves).
 
 ai_bot_greedy_aux([Move1 | Moves1], MovesPred, MovePred, ValuePred, Game, Record, BestMoves) :-
@@ -15,6 +20,7 @@ ai_bot_greedy_aux([Move1 | Moves1], MovesPred, MovePred, ValuePred, Game, Record
         V2,
         ai_update(Move1, Value, Record, BestMoves1),
         ai_bot_greedy_aux(Moves1, MovesPred, MovePred, ValuePred, Game, BestMoves1, BestMoves).
+ai_bot_greedy_aux([], _, _, _, _, BestMoves, BestMoves).
         
 ai_evaluate_and_choose(MovesPred, MovePred, ValuePred, Game, BestMove) :-
         Ms =.. [MovesPred, Game, Moves],

@@ -92,12 +92,16 @@ make_play_joker(Game, New_game) :-
         make_play_joker(Game, New_game).
 
 make_play_bot(Game, New_game) :-
-        ai_evaluate_and_choose(available_moves, place_xpiece, game_value, Game, BestMove),
-        place_xpiece(Game, BestMove, New_game).
+        game_difficulty(Game, 1),
+        ai_bot_random(available_moves, Game, Move),
+        write('Bot played in position '), write(Move), nl,
+        place_xpiece(Game, Move, New_game).
 
-make_play_bot_greedy(Game, New_game) :-
-        ai_bot_greedy(available_moves, place_xpiece, game_value, Game, BestMove),
-        place_xpiece(Game, BestMove, New_game).
+make_play_bot(Game, New_game) :-
+        game_difficulty(Game, 2),
+        ai_bot_greedy(available_moves, place_xpiece, game_value, Game, Move),
+        write('Bot played in position '), write(Move), nl,
+        place_xpiece(Game, Move, New_game).
 
 make_play(Game, New_game) :-
         game_board(Game, Board),
