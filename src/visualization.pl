@@ -2,12 +2,12 @@
 
 xpiece_to_ascii(-1, ' ').
 xpiece_to_ascii(0, 'X').
-xpiece_to_ascii(1, 'R').
-xpiece_to_ascii(2, 'G').
+xpiece_to_ascii(1, '*').
+xpiece_to_ascii(2, '»').
 
 marker_to_ascii(-1, ' ').
-marker_to_ascii(1, 'r').
-marker_to_ascii(2, 'g').
+marker_to_ascii(1, '#').
+marker_to_ascii(2, '=').
 
 print_board([H | T]) :-
         write('      0       1       2       3       4       5       6       7'), nl,

@@ -27,12 +27,16 @@ show_main_menu :-
         cli_get_digit(D),
         D >= 0,
         D =< 3, !,
-        ask_max_score(Score),
-        main_menu(D, Score).
+        main_menu(D).
 show_main_menu :-
         write('Invalid option! Please try again.'), nl,
         show_main_menu.
         
+main_menu(0) :- !.
+main_menu(D) :-
+        ask_max_score(Score),
+        main_menu(D, Score).
+
 main_menu(1, Max_Score) :-
         ask_difficulty(Difficulty),
         start_game(Game, Max_Score, Difficulty),
@@ -46,7 +50,6 @@ main_menu(3, Max_Score) :-
         ask_difficulty(Difficulty),
         start_game(Game, Max_Score, Difficulty),
         play_botvbot(Game), !.
-main_menu(0, _).
 
 randomize_order_1vbot(Preds) :-
         random(0, 2, 1),
