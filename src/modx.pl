@@ -92,8 +92,11 @@ make_play_joker(Game, New_game) :-
         make_play_joker(Game, New_game).
 
 make_play_bot(Game, New_game) :-
-        available_moves(Game, Moves),
-        ai_evaluate_and_choose(Moves, place_xpiece, game_value, Game, BestMove),
+        ai_evaluate_and_choose(available_moves, place_xpiece, game_value, Game, BestMove),
+        place_xpiece(Game, BestMove, New_game).
+
+make_play_bot_greedy(Game, New_game) :-
+        ai_bot_greedy(available_moves, place_xpiece, game_value, Game, BestMove),
         place_xpiece(Game, BestMove, New_game).
 
 make_play(Game, New_game) :-
