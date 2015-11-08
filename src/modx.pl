@@ -38,6 +38,22 @@ count_xpieces(Xpiece, [Line | T], N) :-
 
 play :- show_intro.
 
+play_1vbot(Game, _) :- 
+        game_ended(Game), !,
+        game_board(Game, Board),
+        print_board(Board),
+        game_winner(Game, Winner),
+        show_end_game(Winner).
+
+play_1vbot(Game, Preds) :-
+        print_game(Game),
+        game_player(Game, Player),
+        nth1(Player, Preds, MovePred),
+        Play =.. [MovePred, Game, Game1],
+        Play,
+        end_play(Game1, New_game),
+        play_1vbot(New_game, Preds).
+
 play_1v1(Game) :- game_ended(Game), !,
         game_board(Game, Board),
         print_board(Board),

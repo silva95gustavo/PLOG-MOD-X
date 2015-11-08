@@ -1,5 +1,7 @@
 % Menus
 
+:- ensure_loaded('modx.pl').
+
 show_intro :-
         nl, nl,
         write('        |/$$      /$$  /$$$$$$  /$$$$$$$        /$$   /$$        '), nl,
@@ -32,7 +34,9 @@ show_main_menu :-
         
 main_menu(1) :-
         start_game(Game),
-        play_1v1(Game), !.
+        randomize_order_1vbot(Preds),
+        write(Preds), nl,
+        play_1vbot(Game, Preds), !.
 main_menu(2) :-
         start_game(Game),
         play_1v1(Game), !.
@@ -40,6 +44,29 @@ main_menu(3) :-
         start_game(Game),
         play_botvbot(Game), !.
 main_menu(0).
+
+randomize_order_1vbot(Preds) :-
+        random(0, 2, 1),
+        !,
+        order2_1vbot(Preds).
+
+randomize_order_1vbot(Preds) :-
+        order1_1vbot(Preds).
+
+order1_1vbot([make_play, make_play_bot]).
+order2_1vbot([make_play_bot, make_play]).
+
+ask_for_jokers(Num) :-
+        write(Num),
+        ask_for_jokers_aux(Num),
+        write(' must be placed. Please indicate the joker\'s location.'), nl.
+
+ask_for_jokers_aux(Num) :-
+        Num is 1,
+        write(' joker').
+ask_for_jokers_aux(Num) :-
+        Num > 1,
+        write(' jokers').
 
 show_end_game(Winner) :-
         nl, nl,
