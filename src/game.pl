@@ -61,8 +61,12 @@ game_dec_player_num_xpieces(Game, Player, New_game) :-
         player_info_set_num_xpieces(Player_info1, Num_xpieces1, Player_info),
         game_set_player_info(Game, Player, Player_info, New_game).
 
-game_value(_, R) :-
-        random(0, 10, R).
+game_value(Game, Value) :-
+        game_player(Game, Curr_Player),
+        game_player_score(Game, Curr_Player, Curr_Score),
+        next_player(Curr_Player, Other_Player),
+        game_player_score(Game, Other_Player, Other_Score),
+        Value is Curr_Score-Other_Score.                        %(Max_Score-(Max_Score - Curr_Score)) - (Max_Score-(Max_Score - Other_Score)).
                 
 player_info_score([Score, _], Score).
 player_info_num_xpieces([_, Num_xpieces], Num_xpieces).
@@ -193,7 +197,7 @@ print_game(Game) :-
         print_board(Board), nl.
 
 game_ended(Game) :-
-        max_score(a, MaxScore),
+        max_score(Game, MaxScore),
         game_ended(Game, MaxScore).
 game_ended(Game) :-
         game_player_info(Game, 1, Player_info),
