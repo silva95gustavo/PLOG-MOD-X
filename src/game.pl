@@ -16,7 +16,7 @@ game_player_info(Game, Player, Player_info) :-
         P2 is Player + 1,
         nth0(P2, Game, Player_info).
 
-max_score(8). % TODO
+max_score(_, 8). % TODO
 
 game_player_scores(Game, [Score1, Score2]) :-
         game_player_info(Game, 1, Info1),
@@ -193,7 +193,7 @@ print_game(Game) :-
         print_board(Board), nl.
 
 game_ended(Game) :-
-        max_score(MaxScore),
+        max_score(a, MaxScore),
         game_ended(Game, MaxScore).
 game_ended(Game) :-
         game_player_info(Game, 1, Player_info),
