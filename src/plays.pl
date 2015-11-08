@@ -1,6 +1,9 @@
 % Plays
 
 place_xpiece(Game, Coords, New_game):-
+        nth0(0, Coords, X),
+        nth0(1, Coords, Y),
+        X >= 0, X < 8, Y >= 0, Y < 8,
         game_board(Game, Board),
         num_jokers_to_place(Board, 0), !,
         game_player(Game, Player),

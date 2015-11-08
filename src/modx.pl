@@ -39,8 +39,7 @@ play :- show_intro.
 
 play_1vbot(Game, _) :- 
         game_ended(Game), !,
-        game_board(Game, Board),
-        print_board(Board),
+        print_game(Game),
         game_winner(Game, Winner),
         show_end_game(Winner).
 
@@ -122,7 +121,8 @@ make_play(Game, New_game) :-
 end_play(Game, New_game) :-
         check_patterns(Game, New_scores),
         convert_patterns_to_score(Game, New_scores, Game1),
-        game_next_player(Game1, New_game).
+        game_update_scores(Game1, Game2),
+        game_next_player(Game2, New_game).
         
         
 read_coords([X, Y]) :-

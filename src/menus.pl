@@ -91,6 +91,10 @@ ask_for_jokers_aux(Num) :-
         Num > 1,
         write(' jokers').
 
+print_scores(Score1, Score2) :-
+        nl, write('      Player 1\'s Score: '), write(Score1), nl,
+        nl, write('      Player 2\'s Score: '), write(Score2), nl, nl.
+
 show_end_game(Winner) :-
         nl, nl,
         write('  /$$$$$$                                          '), nl,

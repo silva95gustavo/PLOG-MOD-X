@@ -194,9 +194,17 @@ convert_pattern_to_score(Game, Coords, New_game) :-
         game_inc_player_num_xpieces(Game1, Player, Game2),
         game_inc_player_score(Game2, Player, New_game).
 
+show_scores(Game) :-
+        game_player_info(Game, 1, P1Info),
+        game_player_info(Game, 2, P2Info),
+        player_info_score(P1Info, P1Score),
+        player_info_score(P2Info, P2Score),
+        print_scores(P1Score, P2Score).
+
 print_game(Game) :-
         game_board(Game, Board),
-        print_board(Board), nl.
+        print_board(Board), 
+        show_scores(Game), nl.
 
 game_ended(Game) :-
         game_max_score(Game, MaxScore),
@@ -234,3 +242,10 @@ count_bases_row([[[Player|_]|_]|Rest], Player, Count) :-
         Count is Count1+1.
 count_bases_row([_|Rest], Player, Count) :- 
         count_bases_row(Rest, Player, Count).
+
+game_update_scores([Board, Player, P1Info, P2Info, MS, Diff], [Board, Player, P1InfoNew, P2InfoNew, MS, Diff]) :-
+        board_get_scores(Board, P1Score, P2Score),
+        player_info_set_score(P1Info, P1Score, P1InfoNew),
+        player_info_set_score(P2Info, P2Score, P2InfoNew).
+
+

@@ -64,3 +64,29 @@ board_set_cell(Board, [X, Y], Cell, New_board) :-
 board_get_size([H | T], Width, Height) :-
         length([H | T], Height),
         length(H, Width).
+
+board_get_scores([], 0, 0).
+board_get_scores([Row1|Rows], Score1, Score2) :-
+        board_get_scores_row(Row1, Score1_1, Score2_1),
+        board_get_scores(Rows, Score1_2, Score2_2),
+        Score1 is Score1_1 + Score1_2,
+        Score2 is Score2_1 + Score2_2.
+
+board_get_scores_row([], 0, 0).
+board_get_scores_row([Cell|Row], Score1, Score2) :-
+        cell_top_spiece(Cell, -1),
+        board_get_scores_row(Row, Score1, Score2).
+board_get_scores_row([Cell|Row], Score1, Score2) :-
+        cell_top_spiece(Cell, 1),
+        board_get_scores_row(Row, Score1_1, Score2),
+        Score1 is Score1_1 + 1.
+board_get_scores_row([Cell|Row], Score1, Score2) :-
+        cell_top_spiece(Cell, 2),
+        board_get_scores_row(Row, Score1, Score2_1),
+        Score2 is Score2_1 + 1.
+
+
+
+
+
+
